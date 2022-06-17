@@ -1,9 +1,11 @@
 name: Staging Deployment Pipeline
 
-on:
-  push:
-    branches:
-      - main
+# on:
+#   push:
+#     branches:
+#       - main
+
+on: workflow_dispatch
 
 jobs:
   build:

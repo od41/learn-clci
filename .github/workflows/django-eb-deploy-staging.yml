@@ -1,0 +1,27 @@
+name: Staging Deployment Pipeline
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout source code
+      uses: actions/checkout@v3
+    - name: Generate deployment package
+      run: zip -r application.zip . -x '*.git*'
+    - name: Deploy to EB
+      uses: einaregilsson/beanstalk-deploy@v20
+      with:
+        aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        application_name: ${{ secrets.APPLICATION_NAME }}
+        environment_name: ${{ secrets.STAGING_ENVIRONMENT_NAME }}
+        version_label: plus-api-${{ github.SHA }}
+        region: ${{ secrets.AWS_REGION }}
+        deployment_package: application.zip
+        wait_for_environment_recovery: false
+        wait_for_deployment: false
